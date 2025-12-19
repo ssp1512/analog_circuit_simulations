@@ -1,0 +1,27 @@
+********** Common source amplifier with N-channel MOSFET and Resistive losd***********
+.title CS Amplifier with NMOS Driver and Resistive Load
+.lib /home/swati/share/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+.global gnd
+.temp 27
+
+xmn1 out in gnd gnd sky130_fd_pr__nfet_01v8 w=10 l=2 m=2
+Rd avdd out 7.7K
+Cl out gnd 10p
+
+*vgs in gnd dc 0.9 ac -1
+vsup avdd gnd dc 1.8
+vin in gnd dc 0.85 ac -1 sin(0 1m 1000)
+*.op
+*.dc vgs 0 1.8 0.01
+.ac dec 40 1 1G
+*.tran 20u 1n
+.control
+run
+set color0=white
+print v(out)
+plot v(in) v(out)
+plot db20(v(out)/v(in))
+plot ph(v(out)/v(in))
+.end
+.endc
